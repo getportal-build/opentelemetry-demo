@@ -1,0 +1,414 @@
+// Starter spec, read from the code and traces by portal (no AI).
+// It says what exists. Add what the code can't: domains, your names,
+// rules, and what you plan to build.
+// Conventions: https://portal.haris-d21.workers.dev/skills/portal-architecture/SKILL.md
+model {
+  system = domain 'opentelemetry-demo' {
+    ad = service 'ad' {  // compose.yaml:32
+      technology 'Java · gRPC'
+      metadata {
+        code 'src/ad/**'
+        otel_service 'ad'
+        resource 'ad'
+      }
+    }
+    cart = service 'cart' {  // compose.yaml:80
+      technology 'C# · gRPC · REST'
+      metadata {
+        code 'src/cart/src/**'
+        otel_service 'cart'
+        resource 'cart'
+      }
+      cartstore = component 'cartstore' {
+        metadata {
+          code 'src/cart/src/cartstore/**'
+        }
+      }
+      services = component 'services' {
+        metadata {
+          code 'src/cart/src/services/**'
+        }
+      }
+    }
+    checkout = service 'checkout' {  // compose.yaml:118
+      technology 'Go · gRPC'
+      metadata {
+        code 'src/checkout/**'
+        otel_service 'checkout'
+        resource 'checkout'
+      }
+      flags = component 'flags' {
+        metadata {
+          code 'src/checkout/flags/**'
+        }
+      }
+      genproto = component 'genproto' {
+        metadata {
+          code 'src/checkout/genproto/**'
+        }
+      }
+      kafka = component 'kafka' {
+        metadata {
+          code 'src/checkout/kafka/**'
+        }
+      }
+      money = component 'money' {
+        metadata {
+          code 'src/checkout/money/**'
+        }
+      }
+    }
+    currency = service 'currency' {  // compose.yaml:180
+      technology 'C++ · gRPC'
+      metadata {
+        code 'src/currency/**'
+        otel_service 'currency'
+        resource 'currency'
+      }
+    }
+    email = service 'email' {  // compose.yaml:218
+      technology 'Ruby · Sinatra · REST'
+      metadata {
+        code 'src/email/**'
+        otel_service 'email'
+        resource 'email'
+      }
+    }
+    frontend = service 'frontend' {  // compose.yaml:255
+      technology 'TypeScript · Next.js'
+      metadata {
+        code 'src/frontend/**'
+        otel_service 'frontend'
+        resource 'frontend'
+      }
+      components = component 'components' {
+        metadata {
+          code 'src/frontend/components/**'
+        }
+      }
+      gateways = component 'gateways' {
+        metadata {
+          code 'src/frontend/gateways/**'
+        }
+      }
+      pages = component 'pages' {
+        metadata {
+          code 'src/frontend/pages/**'
+        }
+      }
+      protos = component 'protos' {
+        metadata {
+          code 'src/frontend/protos/**'
+        }
+      }
+      providers = component 'providers' {
+        metadata {
+          code 'src/frontend/providers/**'
+        }
+      }
+      services_2 = component 'services' {
+        metadata {
+          code 'src/frontend/services/**'
+        }
+      }
+      styles = component 'styles' {
+        metadata {
+          code 'src/frontend/styles/**'
+        }
+      }
+      types = component 'types' {
+        metadata {
+          code 'src/frontend/types/**'
+        }
+      }
+      utils = component 'utils' {
+        metadata {
+          code 'src/frontend/utils/**'
+        }
+      }
+    }
+    frontend_proxy = service 'frontend-proxy' {  // compose.yaml:323
+      technology 'ghcr.io/open-telemetry/demo:latest-frontend-proxy'
+      metadata {
+        otel_service 'frontend-proxy'
+        resource 'frontend-proxy'
+      }
+    }
+    image_provider = service 'image-provider' {  // compose.yaml:389
+      technology 'ghcr.io/open-telemetry/demo:latest-image-provider'
+      metadata {
+        otel_service 'image-provider'
+        resource 'image-provider'
+      }
+    }
+    load_generator = service 'load-generator' {  // compose.yaml:422
+      technology 'Python · Flask · WebSocket'
+      metadata {
+        code 'src/load-generator/**'
+        otel_service 'load-generator'
+        resource 'load-generator'
+      }
+    }
+    payment = service 'payment' {  // compose.yaml:471
+      technology 'JavaScript · gRPC'
+      metadata {
+        code 'src/payment/**'
+        otel_service 'payment'
+        resource 'payment'
+      }
+    }
+    product_catalog = service 'product-catalog' {  // compose.yaml:521
+      technology 'Go · gRPC'
+      metadata {
+        code 'src/product-catalog/**'
+        otel_service 'product-catalog'
+        resource 'product-catalog'
+      }
+      flags_2 = component 'flags' {
+        metadata {
+          code 'src/product-catalog/flags/**'
+        }
+      }
+      genproto_3 = component 'genproto' {
+        metadata {
+          code 'src/product-catalog/genproto/**'
+        }
+      }
+    }
+    quote = service 'quote' {  // compose.yaml:571
+      technology 'PHP · Slim'
+      metadata {
+        code 'src/quote/**'
+        otel_service 'quote'
+        resource 'quote'
+      }
+      app = component 'app' {
+        metadata {
+          code 'src/quote/app/*'
+        }
+      }
+      public = component 'public' {
+        metadata {
+          code 'src/quote/public/**'
+        }
+      }
+      Application = component 'Application' {
+        metadata {
+          code 'src/quote/src/Application/**'
+        }
+      }
+    }
+    recommendation = service 'recommendation' {  // compose.yaml:608
+      technology 'Java · Spring Boot'
+      metadata {
+        code 'src/recommendation/**'
+        otel_service 'recommendation'
+        resource 'recommendation'
+      }
+    }
+    shipping = service 'shipping' {  // compose.yaml:654
+      technology 'Rust · Actix Web · REST'
+      metadata {
+        code 'src/shipping/**'
+        otel_service 'shipping'
+        resource 'shipping'
+      }
+    }
+    flagd = service 'flagd' {  // compose.yaml:702
+      technology 'ghcr.io/open-feature/flagd:v0.19.0'
+      metadata {
+        otel_service 'flagd'
+        resource 'flagd'
+      }
+    }
+    flagd_ui = service 'flagd-ui' {  // compose.yaml:729
+      technology 'Elixir · Phoenix · REST'
+      metadata {
+        code 'src/flagd-ui/**'
+        otel_service 'flagd-ui'
+        resource 'flagd-ui'
+      }
+      config = component 'config' {
+        metadata {
+          code 'src/flagd-ui/config/**'
+        }
+      }
+      lib = component 'lib' {
+        metadata {
+          code 'src/flagd-ui/lib/*'
+        }
+      }
+      flagd_ui_2 = component 'flagd_ui' {
+        metadata {
+          code 'src/flagd-ui/lib/flagd_ui/**'
+        }
+      }
+      flagd_ui_web = component 'flagd_ui_web' {
+        metadata {
+          code 'src/flagd-ui/lib/flagd_ui_web/**'
+        }
+      }
+    }
+    telemetry_docs = service 'telemetry-docs' {  // compose.yaml:768
+      technology 'Python'
+      metadata {
+        code 'src/telemetry-docs/**'
+        otel_service 'telemetry-docs'
+        resource 'telemetry-docs'
+      }
+    }
+    astronomy_db = datastore 'astronomy-db' {  // compose.yaml:797
+      technology 'postgres:19.0'
+      metadata {
+        resource 'astronomy-db'
+      }
+    }
+    valkey_cart = datastore 'valkey-cart' {  // compose.yaml:821
+      technology 'ghcr.io/valkey-io/valkey:9.2.0-alpine3.24'
+      metadata {
+        resource 'valkey-cart'
+      }
+    }
+    otel_collector = infra 'otel-collector' {  // compose.yaml:847
+      technology 'ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.165.0'
+      metadata {
+        resource 'otel-collector'
+      }
+    }
+    Accounting = service 'Accounting' {  // src/accounting/Accounting.csproj:1
+      technology 'C#'
+      metadata {
+        code 'src/accounting/**'
+        otel_service 'Accounting'
+        resource 'Accounting'
+      }
+    }
+    Kafka = event 'Kafka' {  // src/accounting/Accounting.csproj:13
+      technology 'Kafka'
+      metadata {
+        resource 'Kafka'
+      }
+    }
+    agent = service 'agent' {  // src/agent/requirements.in:1
+      technology 'Python · FastAPI · WebSocket'
+      metadata {
+        code 'src/agent/**'
+        otel_service 'agent'
+        resource 'agent'
+      }
+    }
+    chatbot = service 'chatbot' {  // src/chatbot/requirements.in:1
+      technology 'Python · FastAPI'
+      metadata {
+        code 'src/chatbot/**'
+        otel_service 'chatbot'
+        resource 'chatbot'
+      }
+    }
+    genproto_2 = service 'genproto' {  // src/currency/genproto/CMakeLists.txt:1
+      technology 'C++'
+      metadata {
+        code 'src/currency/genproto/**'
+        otel_service 'genproto'
+        resource 'genproto'
+      }
+    }
+    fraud_detection = service 'fraud-detection' {  // src/fraud-detection/build.gradle.kts:1
+      technology 'Kotlin'
+      metadata {
+        code 'src/fraud-detection/**'
+        otel_service 'fraud-detection'
+        resource 'fraud-detection'
+      }
+    }
+    mcp = service 'mcp' {  // src/mcp/requirements.in:1
+      technology 'Python · FastAPI · WebSocket'
+      metadata {
+        code 'src/mcp/**'
+        otel_service 'mcp'
+        resource 'mcp'
+      }
+    }
+  }
+
+  ad -[request]-> flagd  // env.FLAGD_HOST
+  cart -[request]-> flagd  // env.FLAGD_HOST
+  cart -> valkey_cart  // reads or writes? say which: -[reads]-> or -[writes]->
+  checkout -[request]-> flagd  // env.FLAGD_HOST
+  checkout -[request]-> cart  // env.CART_ADDR
+  checkout -[request]-> currency  // env.CURRENCY_ADDR
+  checkout -[request]-> email  // env.EMAIL_ADDR
+  checkout -[request]-> payment  // env.PAYMENT_ADDR
+  checkout -[request]-> product_catalog  // env.PRODUCT_CATALOG_ADDR
+  checkout -[request]-> shipping  // env.SHIPPING_ADDR
+  email -[request]-> flagd  // env.FLAGD_HOST
+  frontend -[request]-> ad  // env.AD_ADDR
+  frontend -[request]-> cart  // env.CART_ADDR
+  frontend -[request]-> checkout  // env.CHECKOUT_ADDR
+  frontend -[request]-> currency  // env.CURRENCY_ADDR
+  frontend -[request]-> product_catalog  // env.PRODUCT_CATALOG_ADDR
+  frontend -[request]-> recommendation  // env.RECOMMENDATION_ADDR
+  frontend -[request]-> shipping  // env.SHIPPING_ADDR
+  frontend -[request]-> flagd  // env.FLAGD_HOST
+  frontend_proxy -[request]-> frontend  // env.FRONTEND_HOST
+  frontend_proxy -[request]-> load_generator  // env.LOCUST_WEB_HOST
+  frontend_proxy -[request]-> image_provider  // env.IMAGE_PROVIDER_HOST
+  frontend_proxy -[request]-> flagd  // env.FLAGD_HOST
+  frontend_proxy -[request]-> flagd_ui  // env.FLAGD_UI_HOST
+  frontend_proxy -[request]-> telemetry_docs  // env.TELEMETRY_DOCS_HOST
+  load_generator -[request]-> frontend_proxy  // env.LOCUST_HOST
+  load_generator -[request]-> flagd  // env.FLAGD_HOST
+  payment -[request]-> flagd  // env.FLAGD_HOST
+  product_catalog -[request]-> flagd  // env.FLAGD_HOST
+  product_catalog -> astronomy_db  // reads or writes? say which: -[reads]-> or -[writes]->
+  recommendation -[request]-> product_catalog  // env.PRODUCT_CATALOG_ADDR
+  recommendation -[request]-> flagd  // env.FLAGD_HOST
+  shipping -[request]-> quote  // env.QUOTE_ADDR
+  shipping -[request]-> flagd  // env.FLAGD_HOST
+  Accounting -> Kafka
+  Accounting -> astronomy_db  // reads or writes? say which: -[reads]-> or -[writes]->
+  money -> genproto
+  checkout -> Kafka
+  lib -> flagd_ui_web
+  fraud_detection -> Kafka
+  components -> gateways
+  components -> protos
+  components -> providers
+  components -> styles
+  components -> types
+  components -> utils
+  gateways -> protos
+  gateways -> types
+  gateways -> utils
+  pages -> components
+  pages -> gateways
+  pages -> protos
+  pages -> providers
+  pages -> services_2
+  pages -> styles
+  pages -> types
+  pages -> utils
+  providers -> gateways
+  providers -> protos
+  providers -> types
+  providers -> utils
+  services_2 -> gateways
+  services_2 -> protos
+  styles -> components
+  types -> protos
+  utils -> gateways
+}
+
+specification {
+  element domain
+  element service
+  element event
+  element datastore
+  element infra
+  element component
+  relationship request
+  relationship publishes
+  relationship consumes
+  relationship reads
+  relationship writes
+}
