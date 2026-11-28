@@ -134,6 +134,7 @@ services:
       - FLAGD_HOST
       - FLAGD_PORT
       - CHECKOUT_PORT
+      - AD_ADDR
       - CART_ADDR
       - CURRENCY_ADDR
       - EMAIL_ADDR
