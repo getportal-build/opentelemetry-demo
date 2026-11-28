@@ -44,6 +44,18 @@ model {
         resource 'email'
       }
     }
+    loyalty = service 'loyalty' {
+      description 'Loyalty points: earned at checkout, shown in the header.'
+      metadata {
+        code 'src/loyalty/**'
+      }
+    }
+    loyalty_db = datastore 'loyalty-db' {
+      description 'Points per shopper.'
+      metadata {
+        resource 'loyalty-db'
+      }
+    }
     frontend = service 'frontend' {  // compose.yaml:255
       technology 'TypeScript · Next.js'
       metadata {
@@ -255,6 +267,8 @@ model {
   cart -> valkey_cart  // reads or writes? say which: -[reads]-> or -[writes]->
   checkout -[request]-> flagd  // env.FLAGD_HOST
   checkout -[request]-> cart  // env.CART_ADDR
+  checkout -[request]-> loyalty  // earn points for an order
+  loyalty -[writes]-> loyalty_db
   checkout -[request]-> currency  // env.CURRENCY_ADDR
   checkout -[request]-> email  // env.EMAIL_ADDR
   checkout -[request]-> payment  // env.PAYMENT_ADDR
