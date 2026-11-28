@@ -134,6 +134,7 @@ services:
       - FLAGD_HOST
       - FLAGD_PORT
       - CHECKOUT_PORT
+      - LOYALTY_ADDR=http://loyalty:8090
       - CART_ADDR
       - CURRENCY_ADDR
       - EMAIL_ADDR
@@ -252,6 +253,12 @@ services:
     logging: *logging
 
   # Frontend
+  loyalty:
+    build:
+      context: ./src/loyalty
+    environment:
+      - LOYALTY_PORT=8090
+
   frontend:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frontend
     container_name: frontend
