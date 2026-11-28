@@ -19,16 +19,6 @@ model {
         otel_service 'cart'
         resource 'cart'
       }
-      cartstore = component 'cartstore' {
-        metadata {
-          code 'src/cart/src/cartstore/**'
-        }
-      }
-      services = component 'services' {
-        metadata {
-          code 'src/cart/src/services/**'
-        }
-      }
     }
     checkout = service 'checkout' {  // compose.yaml:118
       technology 'Go · gRPC'
@@ -37,26 +27,6 @@ model {
         otel_service 'checkout'
         resource 'checkout'
       }
-      flags = component 'flags' {
-        metadata {
-          code 'src/checkout/flags/**'
-        }
-      }
-      genproto = component 'genproto' {
-        metadata {
-          code 'src/checkout/genproto/**'
-        }
-      }
-      kafka_2 = component 'kafka' {
-        metadata {
-          code 'src/checkout/kafka/**'
-        }
-      }
-      money = component 'money' {
-        metadata {
-          code 'src/checkout/money/**'
-        }
-      }
     }
     currency = service 'currency' {  // compose.yaml:180
       technology 'C++ · gRPC'
@@ -64,11 +34,6 @@ model {
         code 'src/currency/**'
         otel_service 'currency'
         resource 'currency'
-      }
-      genproto_3 = component 'genproto' {
-        metadata {
-          code 'src/currency/genproto/**'
-        }
       }
     }
     email = service 'email' {  // compose.yaml:218
@@ -85,51 +50,6 @@ model {
         code 'src/frontend/**'
         otel_service 'frontend'
         resource 'frontend'
-      }
-      components = component 'components' {
-        metadata {
-          code 'src/frontend/components/**'
-        }
-      }
-      gateways = component 'gateways' {
-        metadata {
-          code 'src/frontend/gateways/**'
-        }
-      }
-      pages = component 'pages' {
-        metadata {
-          code 'src/frontend/pages/**'
-        }
-      }
-      protos = component 'protos' {
-        metadata {
-          code 'src/frontend/protos/**'
-        }
-      }
-      providers = component 'providers' {
-        metadata {
-          code 'src/frontend/providers/**'
-        }
-      }
-      services_2 = component 'services' {
-        metadata {
-          code 'src/frontend/services/**'
-        }
-      }
-      styles = component 'styles' {
-        metadata {
-          code 'src/frontend/styles/**'
-        }
-      }
-      types = component 'types' {
-        metadata {
-          code 'src/frontend/types/**'
-        }
-      }
-      utils = component 'utils' {
-        metadata {
-          code 'src/frontend/utils/**'
-        }
       }
     }
     frontend_proxy = service 'frontend-proxy' {  // compose.yaml:324
@@ -169,16 +89,6 @@ model {
         otel_service 'product-catalog'
         resource 'product-catalog'
       }
-      flags_2 = component 'flags' {
-        metadata {
-          code 'src/product-catalog/flags/**'
-        }
-      }
-      genproto_2 = component 'genproto' {
-        metadata {
-          code 'src/product-catalog/genproto/**'
-        }
-      }
     }
     quote = service 'quote' {  // compose.yaml:572
       technology 'PHP · Slim'
@@ -186,21 +96,6 @@ model {
         code 'src/quote/**'
         otel_service 'quote'
         resource 'quote'
-      }
-      app = component 'app' {
-        metadata {
-          code 'src/quote/app/*'
-        }
-      }
-      public = component 'public' {
-        metadata {
-          code 'src/quote/public/**'
-        }
-      }
-      Application = component 'Application' {
-        metadata {
-          code 'src/quote/src/Application/**'
-        }
       }
     }
     recommendation = service 'recommendation' {  // compose.yaml:609
@@ -232,26 +127,6 @@ model {
         code 'src/flagd-ui/**'
         otel_service 'flagd-ui'
         resource 'flagd-ui'
-      }
-      config = component 'config' {
-        metadata {
-          code 'src/flagd-ui/config/**'
-        }
-      }
-      lib = component 'lib' {
-        metadata {
-          code 'src/flagd-ui/lib/*'
-        }
-      }
-      flagd_ui_2 = component 'flagd_ui' {
-        metadata {
-          code 'src/flagd-ui/lib/flagd_ui/**'
-        }
-      }
-      flagd_ui_web = component 'flagd_ui_web' {
-        metadata {
-          code 'src/flagd-ui/lib/flagd_ui_web/**'
-        }
       }
     }
     telemetry_docs = service 'telemetry-docs' {  // compose.yaml:769
@@ -416,34 +291,8 @@ model {
   cart -[request]-> opamp_server  // env.OPAMP_SERVER_ENDPOINT
   product_catalog -[request]-> opamp_server  // env.OPAMP_SERVER_ENDPOINT
   accounting -> astronomy_db  // reads or writes? say which: -[reads]-> or -[writes]->
-  money -> genproto
-  lib -> flagd_ui_web
-  components -> gateways
-  components -> protos
-  components -> providers
-  components -> styles
-  components -> types
-  components -> utils
-  gateways -> protos
-  gateways -> types
-  gateways -> utils
-  pages -> components
-  pages -> gateways
-  pages -> protos
-  pages -> providers
-  pages -> services_2
-  pages -> styles
-  pages -> types
-  pages -> utils
-  providers -> gateways
-  providers -> protos
-  providers -> types
-  providers -> utils
-  services_2 -> gateways
-  services_2 -> protos
-  styles -> components
-  types -> protos
-  utils -> gateways
+  agent -[request]-> flagd  // env.FLAGD_HOST
+  chatbot -[request]-> opamp_server  // env.OPAMP_SERVER_ENDPOINT
 }
 
 specification {
