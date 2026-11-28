@@ -47,7 +47,7 @@ model {
           code 'src/checkout/genproto/**'
         }
       }
-      kafka = component 'kafka' {
+      kafka_2 = component 'kafka' {
         metadata {
           code 'src/checkout/kafka/**'
         }
@@ -64,6 +64,11 @@ model {
         code 'src/currency/**'
         otel_service 'currency'
         resource 'currency'
+      }
+      genproto_3 = component 'genproto' {
+        metadata {
+          code 'src/currency/genproto/**'
+        }
       }
     }
     email = service 'email' {  // compose.yaml:218
@@ -169,7 +174,7 @@ model {
           code 'src/product-catalog/flags/**'
         }
       }
-      genproto_3 = component 'genproto' {
+      genproto_2 = component 'genproto' {
         metadata {
           code 'src/product-catalog/genproto/**'
         }
@@ -275,21 +280,7 @@ model {
         resource 'otel-collector'
       }
     }
-    Accounting = service 'Accounting' {  // src/accounting/Accounting.csproj:1
-      technology 'C#'
-      metadata {
-        code 'src/accounting/**'
-        otel_service 'Accounting'
-        resource 'Accounting'
-      }
-    }
-    Kafka = event 'Kafka' {  // src/accounting/Accounting.csproj:13
-      technology 'Kafka'
-      metadata {
-        resource 'Kafka'
-      }
-    }
-    agent = service 'agent' {  // src/agent/requirements.in:1
+    agent = service 'agent' {  // compose.agent.yaml:16
       technology 'Python · FastAPI · WebSocket'
       metadata {
         code 'src/agent/**'
@@ -297,7 +288,15 @@ model {
         resource 'agent'
       }
     }
-    chatbot = service 'chatbot' {  // src/chatbot/requirements.in:1
+    mcp = service 'mcp' {  // compose.agent.yaml:69
+      technology 'Python · FastAPI · WebSocket'
+      metadata {
+        code 'src/mcp/**'
+        otel_service 'mcp'
+        resource 'mcp'
+      }
+    }
+    chatbot = service 'chatbot' {  // compose.agent.yaml:101
       technology 'Python · FastAPI'
       metadata {
         code 'src/chatbot/**'
@@ -305,15 +304,15 @@ model {
         resource 'chatbot'
       }
     }
-    genproto_2 = service 'genproto' {  // src/currency/genproto/CMakeLists.txt:1
-      technology 'C++'
+    accounting = service 'accounting' {  // compose.full.yaml:12
+      technology 'C#'
       metadata {
-        code 'src/currency/genproto/**'
-        otel_service 'genproto'
-        resource 'genproto'
+        code 'src/accounting/**'
+        otel_service 'accounting'
+        resource 'accounting'
       }
     }
-    fraud_detection = service 'fraud-detection' {  // src/fraud-detection/build.gradle.kts:1
+    fraud_detection = service 'fraud-detection' {  // compose.full.yaml:47
       technology 'Kotlin'
       metadata {
         code 'src/fraud-detection/**'
@@ -321,12 +320,55 @@ model {
         resource 'fraud-detection'
       }
     }
-    mcp = service 'mcp' {  // src/mcp/requirements.in:1
-      technology 'Python · FastAPI · WebSocket'
+    kafka = event 'kafka' {  // compose.full.yaml:89
+      technology 'ghcr.io/open-telemetry/demo:latest-kafka'
       metadata {
-        code 'src/mcp/**'
-        otel_service 'mcp'
-        resource 'mcp'
+        resource 'kafka'
+      }
+    }
+    jaeger = infra 'jaeger' {  // compose.observability.yaml:13
+      technology 'quay.io/jaegertracing/jaeger:2.23.0'
+      metadata {
+        resource 'jaeger'
+      }
+    }
+    grafana = infra 'grafana' {  // compose.observability.yaml:43
+      technology 'grafana/grafana:13.3.1'
+      metadata {
+        resource 'grafana'
+      }
+    }
+    prometheus = infra 'prometheus' {  // compose.observability.yaml:65
+      technology 'quay.io/prometheus/prometheus:v3.16.0'
+      metadata {
+        resource 'prometheus'
+      }
+    }
+    opensearch = service 'opensearch' {  // compose.observability.yaml:94
+      technology 'ghcr.io/open-telemetry/demo:latest-opensearch'
+      metadata {
+        otel_service 'opensearch'
+        resource 'opensearch'
+      }
+    }
+    opamp_server = service 'opamp-server' {  // compose.observability.yaml:141
+      technology 'ghcr.io/open-telemetry/demo:latest-opamp-server'
+      metadata {
+        otel_service 'opamp-server'
+        resource 'opamp-server'
+      }
+    }
+    otel_ebpf_profiler = infra 'otel-ebpf-profiler' {  // compose.profiling.yaml:10
+      technology 'ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-ebpf-profiler:0.165.0'
+      metadata {
+        resource 'otel-ebpf-profiler'
+      }
+    }
+    firepit = service 'firepit' {  // compose.profiling.yaml:31
+      technology 'ghcr.io/florianl/firepit:v0.3.0'
+      metadata {
+        otel_service 'firepit'
+        resource 'firepit'
       }
     }
   }
@@ -365,12 +407,17 @@ model {
   recommendation -[request]-> flagd  // env.FLAGD_HOST
   shipping -[request]-> quote  // env.QUOTE_ADDR
   shipping -[request]-> flagd  // env.FLAGD_HOST
-  Accounting -> Kafka
-  Accounting -> astronomy_db  // reads or writes? say which: -[reads]-> or -[writes]->
+  agent -[request]-> mcp  // env.MCP_ENDPOINT
+  chatbot -[request]-> agent  // env.AGENT_ENDPOINT
+  load_generator -[request]-> agent  // env.AGENT_ENDPOINT
+  accounting -[request]-> kafka  // env.KAFKA_ADDR
+  fraud_detection -[request]-> kafka  // env.KAFKA_ADDR
+  checkout -[request]-> kafka  // env.KAFKA_ADDR
+  cart -[request]-> opamp_server  // env.OPAMP_SERVER_ENDPOINT
+  product_catalog -[request]-> opamp_server  // env.OPAMP_SERVER_ENDPOINT
+  accounting -> astronomy_db  // reads or writes? say which: -[reads]-> or -[writes]->
   money -> genproto
-  checkout -> Kafka
   lib -> flagd_ui_web
-  fraud_detection -> Kafka
   components -> gateways
   components -> protos
   components -> providers
