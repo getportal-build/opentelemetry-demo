@@ -258,6 +258,16 @@ services:
       context: ./src/loyalty
     environment:
       - LOYALTY_PORT=8090
+      - DATABASE_URL=postgres://loyalty@loyalty-db:5432/loyalty
+    depends_on:
+      - loyalty-db
+
+  loyalty-db:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_USER=loyalty
+      - POSTGRES_DB=loyalty
+      - POSTGRES_HOST_AUTH_METHOD=trust
 
   frontend:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frontend
