@@ -1,7 +1,7 @@
 // Starter spec, read from the code and traces by portal (no AI).
 // It says what exists. Add what the code can't: domains, your names,
 // rules, and what you plan to build.
-// Conventions: https://portal.haris-d21.workers.dev/skills/portal-architecture/SKILL.md
+// Conventions: https://getportal.build/skills/portal-architecture/SKILL.md
 model {
   system = domain 'opentelemetry-demo' {
     ad = service 'ad' {  // compose.yaml:32
@@ -50,6 +50,8 @@ model {
         code 'src/frontend/**'
         otel_service 'frontend'
         resource 'frontend'
+        // The browser-facing app goes through cart for the cart; it never talks to the cart store itself.
+        never_calls 'valkey-cart'
       }
     }
     frontend_proxy = service 'frontend-proxy' {  // compose.yaml:324
